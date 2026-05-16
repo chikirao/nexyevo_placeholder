@@ -7,6 +7,8 @@
   --glass-glow: rgba(179, 205, 255, 0.16);
   --page-pad-x: clamp(20px, 4vw, 64px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --viewport-height: 100svh;
+  --background-bottom-bleed: 0px;
   --preloader-x: 0px;
   --preloader-y: calc(-50vh + max(46px, env(safe-area-inset-top, 0px) + 28px));
   --preloader-scale: 0.42;
@@ -53,7 +55,7 @@ a {
 .page {
   position: relative;
   width: 100vw;
-  height: 100svh;
+  height: var(--viewport-height);
   min-height: 620px;
   overflow: hidden;
   isolation: isolate;
@@ -68,6 +70,7 @@ a {
 }
 
 .motion-background {
+  bottom: calc(-1 * var(--background-bottom-bleed));
   z-index: 0;
   overflow: hidden;
   background: var(--color-black);
@@ -612,12 +615,17 @@ body.is-loaded .glass-menu {
 }
 
 @media (max-width: 1199px) {
+  :root {
+    --viewport-height: 100svh;
+    --background-bottom-bleed: max(96px, 14vh);
+  }
+
   .page {
-    min-height: 100svh;
+    min-height: var(--viewport-height);
   }
 
   .motion-background__video {
-    transform: translateY(9vh) scale(1.12);
+    transform: translateY(11vh) scale(1.12);
   }
 
   .hero {
@@ -662,13 +670,17 @@ body.is-loaded .glass-menu {
 }
 
 @media (max-width: 767px) {
+  :root {
+    --background-bottom-bleed: max(150px, 18vh);
+  }
+
   html,
   body {
     overflow: hidden;
   }
 
   .page {
-    min-height: 100svh;
+    min-height: var(--viewport-height);
   }
 
   .site-header {
@@ -680,11 +692,11 @@ body.is-loaded .glass-menu {
   }
 
   .motion-background__video {
-    height: 70%;
+    height: calc(70% + var(--background-bottom-bleed));
     top: auto;
     bottom: 0;
     object-position: center bottom;
-    transform: translateY(2vh) scale(1.18);
+    transform: translateY(7vh) scale(1.18);
   }
 
   .page__shade {
@@ -732,6 +744,21 @@ body.is-loaded .glass-menu {
 
   .glass-menu__divider {
     height: 26px;
+  }
+}
+
+@supports (height: 100dvh) {
+  @media (max-width: 1199px) {
+    :root {
+      --viewport-height: 100dvh;
+      --background-bottom-bleed: max(96px, 14dvh);
+    }
+  }
+
+  @media (max-width: 767px) {
+    :root {
+      --background-bottom-bleed: max(150px, 18dvh);
+    }
   }
 }
 
