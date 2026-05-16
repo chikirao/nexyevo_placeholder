@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="nexyevo.com is a coming soon portfolio space launching in summer 2026.">
+    <meta name="theme-color" content="#000000">
+    <title>nexyevo.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preload" href="public/assets/video/optimized/loop1-poster.jpg" as="image">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="preloader" aria-hidden="true">
+      <div class="preloader__brand">nexyevo.com</div>
+    </div>
+
+    <main class="page" aria-label="Nexyevo coming soon">
+      <div class="motion-background" aria-hidden="true">
+        <video class="motion-background__video" data-motion-video autoplay muted playsinline preload="auto" poster="public/assets/video/optimized/loop1-poster.jpg"></video>
+      </div>
+
+      <div class="page__shade" aria-hidden="true"></div>
+
+      <header class="site-header">
+        <p class="site-logo">nexyevo.com</p>
+      </header>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <h1 class="hero__title" id="hero-title" data-i18n="title">
+          <span>Создайте своё</span>
+          <span>пространство мыслей</span>
+        </h1>
+        <p class="hero__subtitle" data-i18n="subtitle">лето 2026</p>
+        <button class="soon-button" type="button" aria-disabled="true">
+          <span class="soon-button__glow" aria-hidden="true"></span>
+          <span class="soon-button__ripple-layer" aria-hidden="true"></span>
+          <span class="soon-button__label">soon</span>
+        </button>
+      </section>
+
+      <nav class="glass-menu" aria-label="Nexyevo links">
+        <div class="glass-menu__glow" aria-hidden="true"></div>
+        <div class="glass-menu__ripple-layer" aria-hidden="true"></div>
+        <button class="glass-menu__item glass-menu__language" type="button" data-language-toggle aria-label="Switch language">
+          <span class="glass-menu__lang-option" data-lang-option="ru">RU</span>
+          <span class="glass-menu__lang-separator">/</span>
+          <span class="glass-menu__lang-option" data-lang-option="en">EN</span>
+        </button>
+        <span class="glass-menu__divider" aria-hidden="true"></span>
+        <a class="glass-menu__item" href="https://t.me/chikikto" target="_blank" rel="noopener noreferrer">chikirao</a>
+        <span class="glass-menu__divider" aria-hidden="true"></span>
+        <a class="glass-menu__item" href="http://t.me/inetstars" target="_blank" rel="noopener noreferrer">platinov</a>
+        <span class="glass-menu__divider" aria-hidden="true"></span>
+        <span class="glass-menu__item glass-menu__status">launching</span>
+      </nav>
+    </main>
+
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
