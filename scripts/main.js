@@ -99,7 +99,9 @@ const playVideo = (key, reset = true) => {
   state.currentVideo = key;
 
   if (video.getAttribute("src") !== src) {
-    video.poster = getPosterPath(key);
+    const poster = getPosterPath(key);
+    document.documentElement.style.setProperty("--motion-poster", `url("${poster}")`);
+    video.poster = poster;
     video.src = src;
     video.load();
   }

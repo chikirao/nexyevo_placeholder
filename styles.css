@@ -9,6 +9,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --viewport-height: 100svh;
   --background-bottom-bleed: 0px;
+  --motion-poster: url("public/assets/video/optimized/loop1-poster.jpg");
   --preloader-x: 0px;
   --preloader-y: calc(-50vh + max(46px, env(safe-area-inset-top, 0px) + 28px));
   --preloader-scale: 0.42;
@@ -35,7 +36,24 @@ body {
   min-height: 100%;
   margin: 0;
   overflow: hidden;
-  background: var(--color-black);
+  background:
+    var(--motion-poster) center bottom / 100% auto no-repeat,
+    var(--color-black);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--background-bottom-bleed));
+  z-index: 0;
+  height: calc(var(--background-bottom-bleed) + 160px);
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.08) 26%, rgba(0, 0, 0, 0.2) 100%),
+    var(--motion-poster) center bottom / 100% auto no-repeat,
+    var(--color-black);
+  pointer-events: none;
 }
 
 button,
@@ -54,8 +72,9 @@ a {
 
 .page {
   position: relative;
+  z-index: 1;
   width: 100vw;
-  height: var(--viewport-height);
+  height: calc(var(--viewport-height) + var(--background-bottom-bleed));
   min-height: 620px;
   overflow: hidden;
   isolation: isolate;
@@ -70,10 +89,11 @@ a {
 }
 
 .motion-background {
-  bottom: calc(-1 * var(--background-bottom-bleed));
   z-index: 0;
   overflow: hidden;
-  background: var(--color-black);
+  background:
+    var(--motion-poster) center bottom / cover no-repeat,
+    var(--color-black);
 }
 
 .motion-background__video {
@@ -621,11 +641,18 @@ body.is-loaded .glass-menu {
   }
 
   .page {
-    min-height: var(--viewport-height);
+    min-height: calc(var(--viewport-height) + var(--background-bottom-bleed));
   }
 
   .motion-background__video {
-    transform: translateY(11vh) scale(1.12);
+    transform: translateY(6vh) scale(1.12);
+  }
+
+  .glass-menu {
+    bottom: max(
+      calc(42px + var(--background-bottom-bleed)),
+      calc(30px + var(--safe-bottom) + var(--background-bottom-bleed))
+    );
   }
 
   .hero {
@@ -680,7 +707,7 @@ body.is-loaded .glass-menu {
   }
 
   .page {
-    min-height: var(--viewport-height);
+    min-height: calc(var(--viewport-height) + var(--background-bottom-bleed));
   }
 
   .site-header {
@@ -692,11 +719,11 @@ body.is-loaded .glass-menu {
   }
 
   .motion-background__video {
-    height: calc(70% + var(--background-bottom-bleed));
+    height: 70%;
     top: auto;
     bottom: 0;
     object-position: center bottom;
-    transform: translateY(7vh) scale(1.18);
+    transform: translateY(0) scale(1.18);
   }
 
   .page__shade {
@@ -730,7 +757,10 @@ body.is-loaded .glass-menu {
   }
 
   .glass-menu {
-    bottom: max(28px, calc(18px + var(--safe-bottom)));
+    bottom: max(
+      calc(28px + var(--background-bottom-bleed)),
+      calc(18px + var(--safe-bottom) + var(--background-bottom-bleed))
+    );
     max-width: calc(100vw - 30px);
     min-height: 70px;
     gap: clamp(9px, 2.4vw, 16px);
@@ -866,7 +896,10 @@ body.is-loaded .glass-menu {
   }
 
   .glass-menu {
-    bottom: max(16px, calc(12px + var(--safe-bottom)));
+    bottom: max(
+      calc(16px + var(--background-bottom-bleed)),
+      calc(12px + var(--safe-bottom) + var(--background-bottom-bleed))
+    );
     max-width: calc(100vw - 72px);
     min-height: 52px;
     gap: clamp(9px, 1.5vw, 16px);
