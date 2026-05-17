@@ -61,12 +61,6 @@ const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)
 const loadStartedAt = performance.now();
 const minimumLoaderTime = prefersReducedMotion ? 0 : 1900;
 
-const getStoredLanguage = () => {
-  if (!storageEnabled) return "ru";
-  const stored = localStorage.getItem("nexyevo-language");
-  return stored === "en" || stored === "ru" ? stored : "ru";
-};
-
 const setLanguage = (language) => {
   const currentCopy = copy[language] || copy.ru;
   title.replaceChildren(...currentCopy.title.map((line) => {
@@ -250,7 +244,7 @@ window.addEventListener("resize", () => {
   resizeTimer = window.setTimeout(handleResize, 160);
 });
 
-setLanguage(getStoredLanguage());
+setLanguage("en");
 playVideo(randomVideo(), true);
 
 window.setTimeout(openPage, prefersReducedMotion ? 0 : 3200);
