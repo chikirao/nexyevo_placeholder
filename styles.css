@@ -34,11 +34,10 @@
 
 html,
 body {
-  position: fixed;
-  inset: 0;
   width: 100%;
   min-width: 320px;
   min-height: 100%;
+  min-height: 100lvh;
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
@@ -49,6 +48,15 @@ body {
   background:
     var(--motion-poster) center bottom / 100% auto no-repeat,
     var(--color-black);
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  height: calc(var(--viewport-height) + var(--background-bottom-bleed));
 }
 
 body::before {
@@ -893,17 +901,17 @@ body.is-loaded .glass-menu {
   }
 }
 
-@supports (height: 100dvh) {
+@supports (height: 100lvh) {
   @media (max-width: 1199px) {
     :root {
-      --viewport-height: 100dvh;
-      --background-bottom-bleed: max(96px, 14dvh);
+      --viewport-height: 100lvh;
+      --background-bottom-bleed: max(96px, 14lvh);
     }
   }
 
   @media (max-width: 767px) {
     :root {
-      --background-bottom-bleed: max(150px, 18dvh);
+      --background-bottom-bleed: max(150px, 18lvh);
     }
   }
 }
