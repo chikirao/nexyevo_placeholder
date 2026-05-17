@@ -13,6 +13,10 @@
   --motion-poster-1: url("public/assets/video/optimized/loop1-poster.jpg");
   --motion-poster-2: url("public/assets/video/optimized/loop2-poster.jpg");
   --motion-poster-3: url("public/assets/video/optimized/loop3-poster.jpg");
+  --motion-height: 100%;
+  --motion-top: 0;
+  --motion-bottom: auto;
+  --motion-transform: translateY(7vh) scale(1.06);
   --preloader-x: 0px;
   --preloader-y: calc(-50vh + max(46px, env(safe-area-inset-top, 0px) + 28px));
   --preloader-scale: 0.42;
@@ -123,12 +127,14 @@ a {
 
 .motion-background__video {
   width: 100%;
-  height: 100%;
+  height: var(--motion-height);
+  top: var(--motion-top);
+  bottom: var(--motion-bottom);
   object-fit: cover;
   object-position: center bottom;
   opacity: 0;
   filter: brightness(1.08) saturate(1.12) contrast(1.04);
-  transform: translateY(7vh) scale(1.06);
+  transform: var(--motion-transform);
   transition: opacity 800ms ease;
   pointer-events: none;
 }
@@ -147,13 +153,19 @@ body.is-apple-fallback .motion-background::before,
 body.is-apple-fallback .motion-background::after {
   content: "";
   position: absolute;
-  inset: -10vh -8vw -18vh;
+  left: 0;
+  right: 0;
+  top: var(--motion-top);
+  bottom: var(--motion-bottom);
+  height: var(--motion-height);
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
   filter: brightness(1.08) saturate(1.14) contrast(1.04);
   pointer-events: none;
-  will-change: opacity, transform;
+  transform: var(--motion-transform);
+  transform-origin: center bottom;
+  will-change: opacity;
 }
 
 body.is-apple-fallback .motion-background::before {
@@ -698,7 +710,6 @@ body.is-loaded .glass-menu {
   0% {
     background-image: var(--motion-poster-1);
     opacity: 1;
-    transform: translate3d(0, 1.5vh, 0) scale(1.03);
   }
   28% {
     opacity: 1;
@@ -706,7 +717,6 @@ body.is-loaded .glass-menu {
   38% {
     background-image: var(--motion-poster-1);
     opacity: 0;
-    transform: translate3d(-1.2vw, 0, 0) scale(1.08);
   }
   39% {
     background-image: var(--motion-poster-3);
@@ -720,7 +730,6 @@ body.is-loaded .glass-menu {
   100% {
     background-image: var(--motion-poster-3);
     opacity: 1;
-    transform: translate3d(1vw, 1vh, 0) scale(1.05);
   }
 }
 
@@ -728,7 +737,6 @@ body.is-loaded .glass-menu {
   0% {
     background-image: var(--motion-poster-2);
     opacity: 0;
-    transform: translate3d(1vw, 0, 0) scale(1.08);
   }
   30% {
     opacity: 0;
@@ -739,7 +747,6 @@ body.is-loaded .glass-menu {
   60% {
     background-image: var(--motion-poster-2);
     opacity: 1;
-    transform: translate3d(0, 1.5vh, 0) scale(1.04);
   }
   72% {
     opacity: 0;
@@ -747,7 +754,6 @@ body.is-loaded .glass-menu {
   100% {
     background-image: var(--motion-poster-2);
     opacity: 0;
-    transform: translate3d(-1vw, 0, 0) scale(1.08);
   }
 }
 
@@ -769,7 +775,7 @@ body.is-loaded .glass-menu {
   }
 
   .motion-background__video {
-    transform: translateY(6vh) scale(1.12);
+    --motion-transform: translateY(6vh) scale(1.12);
   }
 
   .glass-menu {
@@ -843,11 +849,11 @@ body.is-loaded .glass-menu {
   }
 
   .motion-background__video {
-    height: 70%;
-    top: auto;
-    bottom: 0;
+    --motion-height: 70%;
+    --motion-top: auto;
+    --motion-bottom: 0;
+    --motion-transform: translateY(-2vh) scale(1.18);
     object-position: center bottom;
-    transform: translateY(0) scale(1.18);
   }
 
   .page__shade {
@@ -983,11 +989,11 @@ body.is-loaded .glass-menu {
   }
 
   .motion-background__video {
-    top: 0;
-    bottom: auto;
-    height: 100%;
+    --motion-top: 0;
+    --motion-bottom: auto;
+    --motion-height: 100%;
+    --motion-transform: translateY(8vh) scale(1.08);
     object-position: center bottom;
-    transform: translateY(8vh) scale(1.08);
   }
 
   .hero {
