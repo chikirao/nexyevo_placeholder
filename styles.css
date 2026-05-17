@@ -10,6 +10,9 @@
   --viewport-height: 100svh;
   --background-bottom-bleed: 0px;
   --motion-poster: url("public/assets/video/optimized/loop1-poster.jpg");
+  --motion-poster-1: url("public/assets/video/optimized/loop1-poster.jpg");
+  --motion-poster-2: url("public/assets/video/optimized/loop2-poster.jpg");
+  --motion-poster-3: url("public/assets/video/optimized/loop3-poster.jpg");
   --preloader-x: 0px;
   --preloader-y: calc(-50vh + max(46px, env(safe-area-inset-top, 0px) + 28px));
   --preloader-scale: 0.42;
@@ -96,6 +99,11 @@ a {
     var(--color-black);
 }
 
+.motion-background::before,
+.motion-background::after {
+  content: none;
+}
+
 .motion-background__video {
   width: 100%;
   height: 100%;
@@ -110,6 +118,39 @@ a {
 
 .motion-background__video.is-visible {
   opacity: 1;
+}
+
+body.is-macos-desktop .motion-background {
+  background: var(--color-black);
+}
+
+body.is-macos-desktop .motion-background::before,
+body.is-macos-desktop .motion-background::after {
+  content: "";
+  position: absolute;
+  inset: -8vh -6vw -12vh;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: brightness(1.08) saturate(1.14) contrast(1.04);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+body.is-macos-desktop .motion-background::before {
+  background-image: var(--motion-poster-1);
+  opacity: 1;
+  animation: macos-motion-primary 16s ease-in-out infinite;
+}
+
+body.is-macos-desktop .motion-background::after {
+  background-image: var(--motion-poster-2);
+  opacity: 0;
+  animation: macos-motion-secondary 16s ease-in-out infinite;
+}
+
+body.is-macos-desktop .motion-background__video {
+  display: none;
 }
 
 .page__shade {
@@ -624,6 +665,63 @@ body.is-loaded .glass-menu {
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(10.5);
+  }
+}
+
+@keyframes macos-motion-primary {
+  0% {
+    background-image: var(--motion-poster-1);
+    opacity: 1;
+    transform: translate3d(0, 1.5vh, 0) scale(1.03);
+  }
+  28% {
+    opacity: 1;
+  }
+  38% {
+    background-image: var(--motion-poster-1);
+    opacity: 0;
+    transform: translate3d(-1.2vw, 0, 0) scale(1.08);
+  }
+  39% {
+    background-image: var(--motion-poster-3);
+  }
+  62% {
+    opacity: 0;
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    background-image: var(--motion-poster-3);
+    opacity: 1;
+    transform: translate3d(1vw, 1vh, 0) scale(1.05);
+  }
+}
+
+@keyframes macos-motion-secondary {
+  0% {
+    background-image: var(--motion-poster-2);
+    opacity: 0;
+    transform: translate3d(1vw, 0, 0) scale(1.08);
+  }
+  30% {
+    opacity: 0;
+  }
+  42% {
+    opacity: 1;
+  }
+  60% {
+    background-image: var(--motion-poster-2);
+    opacity: 1;
+    transform: translate3d(0, 1.5vh, 0) scale(1.04);
+  }
+  72% {
+    opacity: 0;
+  }
+  100% {
+    background-image: var(--motion-poster-2);
+    opacity: 0;
+    transform: translate3d(-1vw, 0, 0) scale(1.08);
   }
 }
 

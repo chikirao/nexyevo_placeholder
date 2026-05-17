@@ -20,6 +20,7 @@ const state = {
   variant: "",
   currentVideo: "",
   extension: supportsWebm() ? "webm" : "mp4",
+  macosDesktop: isMacosDesktop(),
   opened: false,
   openingQueued: false,
   ready: false,
@@ -57,6 +58,14 @@ function supportsWebm() {
   return probe.canPlayType('video/webm; codecs="vp9"') !== "";
 }
 
+function isMacosDesktop() {
+  const platform = navigator.userAgentData?.platform || navigator.platform || "";
+  const userAgent = navigator.userAgent || "";
+  const isMac = /mac/i.test(platform) || /Macintosh|Mac OS X/i.test(userAgent);
+  const isTouchMac = navigator.maxTouchPoints > 1;
+  return isMac && !isTouchMac;
+}
+
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const loadStartedAt = performance.now();
 const minimumLoaderTime = prefersReducedMotion ? 0 : 1900;
@@ -86,16 +95,25 @@ const getPosterPath = (key) => `public/assets/video/optimized/${key}-poster.jpg`
 
 const getVideoPath = (key, variant) => `public/assets/video/optimized/${key}-${variant}.${state.extension}`;
 
+const setPoster = (key) => {
+  const poster = getPosterPath(key);
+  document.documentElement.style.setProperty("--motion-poster", `url("${poster}")`);
+  video.poster = poster;
+};
+
 const playVideo = (key, reset = true) => {
   const variant = getVariant();
   const src = getVideoPath(key, variant);
   state.variant = variant;
   state.currentVideo = key;
 
+  if (state.macosDesktop) {
+    setPoster(key);
+    return;
+  }
+
   if (video.getAttribute("src") !== src) {
-    const poster = getPosterPath(key);
-    document.documentElement.style.setProperty("--motion-poster", `url("${poster}")`);
-    video.poster = poster;
+    setPoster(key);
     video.src = src;
     video.load();
   }
@@ -168,6 +186,8 @@ const handleVideoEnded = () => {
 };
 
 const handleResize = () => {
+  if (state.macosDesktop) return;
+
   const nextVariant = getVariant();
   if (nextVariant === state.variant) return;
   playVideo(state.currentVideo || randomVideo(), false);
@@ -245,6 +265,16 @@ window.addEventListener("resize", () => {
 });
 
 setLanguage("en");
-playVideo(randomVideo(), true);
+
+if (state.macosDesktop) {
+  document.body.classList.add("is-macos-desktop");
+  video.removeAttribute("autoplay");
+  video.removeAttribute("src");
+  video.load();
+  playVideo("loop1", false);
+  openPage();
+} else {
+  playVideo(randomVideo(), true);
+}
 
 window.setTimeout(openPage, prefersReducedMotion ? 0 : 3200);
