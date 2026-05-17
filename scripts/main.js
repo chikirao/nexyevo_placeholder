@@ -20,7 +20,8 @@ const state = {
   variant: "",
   currentVideo: "",
   extension: supportsWebm() ? "webm" : "mp4",
-  appleFallback: isAppleDevice(),
+  appleDevice: isAppleDevice(),
+  motionFallback: false,
   opened: false,
   openingQueued: false,
   ready: false,
@@ -99,13 +100,27 @@ const setPoster = (key) => {
   video.poster = poster;
 };
 
+const enableMotionFallback = (key = state.currentVideo || "loop1") => {
+  if (state.motionFallback) return;
+
+  state.motionFallback = true;
+  setPoster(key);
+  video.pause();
+  video.removeAttribute("autoplay");
+  video.removeAttribute("src");
+  video.classList.remove("is-visible");
+  video.load();
+  document.body.classList.add("is-apple-fallback");
+  openPage();
+};
+
 const playVideo = (key, reset = true) => {
   const variant = getVariant();
   const src = getVideoPath(key, variant);
   state.variant = variant;
   state.currentVideo = key;
 
-  if (state.appleFallback) {
+  if (state.motionFallback) {
     setPoster(key);
     return;
   }
@@ -124,7 +139,17 @@ const playVideo = (key, reset = true) => {
 
   const playAttempt = video.play();
   if (playAttempt) {
-    playAttempt.catch(() => {});
+    playAttempt.catch(() => {
+      if (state.appleDevice) enableMotionFallback(key);
+    });
+  }
+
+  if (state.appleDevice) {
+    window.setTimeout(() => {
+      if (!state.ready || video.paused || video.currentTime < 0.05) {
+        enableMotionFallback(key);
+      }
+    }, 1400);
   }
 };
 
@@ -184,7 +209,7 @@ const handleVideoEnded = () => {
 };
 
 const handleResize = () => {
-  if (state.appleFallback) return;
+  if (state.motionFallback) return;
 
   const nextVariant = getVariant();
   if (nextVariant === state.variant) return;
@@ -233,6 +258,16 @@ video.addEventListener("loadeddata", markVideoReady, { once: true });
 video.addEventListener("ended", handleVideoEnded);
 video.addEventListener("error", fallbackToMp4);
 
+const preventViewportGesture = (event) => {
+  event.preventDefault();
+};
+
+document.addEventListener("touchmove", preventViewportGesture, { passive: false });
+document.addEventListener("gesturestart", preventViewportGesture, { passive: false });
+document.addEventListener("gesturechange", preventViewportGesture, { passive: false });
+document.addEventListener("gestureend", preventViewportGesture, { passive: false });
+document.addEventListener("dblclick", preventViewportGesture, { passive: false });
+
 menu.addEventListener("pointermove", moveGlow);
 menu.addEventListener("pointerenter", moveGlow);
 menu.addEventListener("pointerleave", () => setGlow(menu, false));
@@ -263,16 +298,6 @@ window.addEventListener("resize", () => {
 });
 
 setLanguage("en");
-
-if (state.appleFallback) {
-  document.body.classList.add("is-apple-fallback");
-  video.removeAttribute("autoplay");
-  video.removeAttribute("src");
-  video.load();
-  playVideo("loop1", false);
-  openPage();
-} else {
-  playVideo(randomVideo(), true);
-}
+playVideo(randomVideo(), true);
 
 window.setTimeout(openPage, prefersReducedMotion ? 0 : 3200);
