@@ -20,7 +20,7 @@ const state = {
   variant: "",
   currentVideo: "",
   extension: supportsWebm() ? "webm" : "mp4",
-  macosDesktop: isMacosDesktop(),
+  appleFallback: isAppleDevice(),
   opened: false,
   openingQueued: false,
   ready: false,
@@ -58,12 +58,10 @@ function supportsWebm() {
   return probe.canPlayType('video/webm; codecs="vp9"') !== "";
 }
 
-function isMacosDesktop() {
+function isAppleDevice() {
   const platform = navigator.userAgentData?.platform || navigator.platform || "";
   const userAgent = navigator.userAgent || "";
-  const isMac = /mac/i.test(platform) || /Macintosh|Mac OS X/i.test(userAgent);
-  const isTouchMac = navigator.maxTouchPoints > 1;
-  return isMac && !isTouchMac;
+  return /iPhone|iPad|iPod|Macintosh|Mac OS X/i.test(userAgent) || /Mac|iPhone|iPad|iPod/i.test(platform);
 }
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -107,7 +105,7 @@ const playVideo = (key, reset = true) => {
   state.variant = variant;
   state.currentVideo = key;
 
-  if (state.macosDesktop) {
+  if (state.appleFallback) {
     setPoster(key);
     return;
   }
@@ -186,7 +184,7 @@ const handleVideoEnded = () => {
 };
 
 const handleResize = () => {
-  if (state.macosDesktop) return;
+  if (state.appleFallback) return;
 
   const nextVariant = getVariant();
   if (nextVariant === state.variant) return;
@@ -266,8 +264,8 @@ window.addEventListener("resize", () => {
 
 setLanguage("en");
 
-if (state.macosDesktop) {
-  document.body.classList.add("is-macos-desktop");
+if (state.appleFallback) {
+  document.body.classList.add("is-apple-fallback");
   video.removeAttribute("autoplay");
   video.removeAttribute("src");
   video.load();

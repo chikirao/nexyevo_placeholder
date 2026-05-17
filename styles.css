@@ -120,12 +120,12 @@ a {
   opacity: 1;
 }
 
-body.is-macos-desktop .motion-background {
+body.is-apple-fallback .motion-background {
   background: var(--color-black);
 }
 
-body.is-macos-desktop .motion-background::before,
-body.is-macos-desktop .motion-background::after {
+body.is-apple-fallback .motion-background::before,
+body.is-apple-fallback .motion-background::after {
   content: "";
   position: absolute;
   inset: -8vh -6vw -12vh;
@@ -137,19 +137,19 @@ body.is-macos-desktop .motion-background::after {
   will-change: opacity, transform;
 }
 
-body.is-macos-desktop .motion-background::before {
+body.is-apple-fallback .motion-background::before {
   background-image: var(--motion-poster-1);
   opacity: 1;
   animation: macos-motion-primary 16s ease-in-out infinite;
 }
 
-body.is-macos-desktop .motion-background::after {
+body.is-apple-fallback .motion-background::after {
   background-image: var(--motion-poster-2);
   opacity: 0;
   animation: macos-motion-secondary 16s ease-in-out infinite;
 }
 
-body.is-macos-desktop .motion-background__video {
+body.is-apple-fallback .motion-background__video {
   display: none;
 }
 
