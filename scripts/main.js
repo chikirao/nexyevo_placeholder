@@ -22,6 +22,7 @@ const state = {
   extension: supportsWebm() ? "webm" : "mp4",
   appleDevice: isAppleDevice(),
   motionFallback: false,
+  playbackWatchToken: 0,
   opened: false,
   openingQueued: false,
   ready: false,
@@ -104,6 +105,7 @@ const enableMotionFallback = (key = state.currentVideo || "loop1") => {
   if (state.motionFallback) return;
 
   state.motionFallback = true;
+  state.playbackWatchToken += 1;
   setPoster(key);
   video.pause();
   video.removeAttribute("autoplay");
@@ -112,6 +114,29 @@ const enableMotionFallback = (key = state.currentVideo || "loop1") => {
   video.load();
   document.body.classList.add("is-apple-fallback");
   openPage();
+};
+
+const watchPlayback = (key) => {
+  if (!state.appleDevice || state.motionFallback) return;
+
+  const token = ++state.playbackWatchToken;
+  let lastTime = video.currentTime || 0;
+
+  [1800, 3500, 5500].forEach((delay, index) => {
+    window.setTimeout(() => {
+      if (token !== state.playbackWatchToken || state.motionFallback) return;
+      if (document.visibilityState === "hidden") return;
+
+      const currentTime = video.currentTime || 0;
+      const progressed = currentTime > lastTime + 0.04;
+      const blocked = (state.ready && (video.paused || !progressed)) || (index === 2 && video.readyState < 2);
+      lastTime = currentTime;
+
+      if (blocked) {
+        enableMotionFallback(key);
+      }
+    }, delay);
+  });
 };
 
 const playVideo = (key, reset = true) => {
@@ -127,6 +152,7 @@ const playVideo = (key, reset = true) => {
 
   if (video.getAttribute("src") !== src) {
     setPoster(key);
+    state.ready = false;
     video.src = src;
     video.load();
   }
@@ -140,17 +166,11 @@ const playVideo = (key, reset = true) => {
   const playAttempt = video.play();
   if (playAttempt) {
     playAttempt.catch(() => {
-      if (state.appleDevice) enableMotionFallback(key);
+      enableMotionFallback(key);
     });
   }
 
-  if (state.appleDevice) {
-    window.setTimeout(() => {
-      if (!state.ready || video.paused || video.currentTime < 0.05) {
-        enableMotionFallback(key);
-      }
-    }, 1400);
-  }
+  watchPlayback(key);
 };
 
 const fallbackToMp4 = () => {
@@ -257,6 +277,15 @@ video.addEventListener("canplay", markVideoReady, { once: true });
 video.addEventListener("loadeddata", markVideoReady, { once: true });
 video.addEventListener("ended", handleVideoEnded);
 video.addEventListener("error", fallbackToMp4);
+video.addEventListener("pause", () => {
+  if (state.appleDevice && !state.motionFallback && !video.ended && document.visibilityState !== "hidden") {
+    window.setTimeout(() => {
+      if (!state.motionFallback && video.paused && !video.ended) {
+        enableMotionFallback(state.currentVideo || "loop1");
+      }
+    }, 500);
+  }
+});
 
 const preventViewportGesture = (event) => {
   event.preventDefault();

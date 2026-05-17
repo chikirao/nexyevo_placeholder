@@ -88,7 +88,9 @@ a {
   min-height: 620px;
   overflow: hidden;
   isolation: isolate;
-  background: var(--color-black);
+  background:
+    var(--motion-poster) center bottom / cover no-repeat,
+    var(--color-black);
 }
 
 .motion-background,
@@ -128,14 +130,16 @@ a {
 }
 
 body.is-apple-fallback .motion-background {
-  background: var(--color-black);
+  background:
+    var(--motion-poster) center bottom / cover no-repeat,
+    var(--color-black);
 }
 
 body.is-apple-fallback .motion-background::before,
 body.is-apple-fallback .motion-background::after {
   content: "";
   position: absolute;
-  inset: -8vh -6vw -12vh;
+  inset: -10vh -8vw -18vh;
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
@@ -158,6 +162,13 @@ body.is-apple-fallback .motion-background::after {
 
 body.is-apple-fallback .motion-background__video {
   display: none;
+}
+
+body.is-apple-fallback .page,
+body.is-apple-fallback::before {
+  background:
+    var(--motion-poster) center bottom / cover no-repeat,
+    var(--color-black);
 }
 
 .page__shade {
